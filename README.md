@@ -146,7 +146,7 @@ MediMind/
 
 MediMind began as a three-person final year project:
 
-- **Farwa Khan** ([@farwamarwat](https://github.com/farwamarwat))
+- **Farwa Ameer** ([@farwamarwat](https://github.com/farwamarwat))
 - **Haris Afzal** ([@HarisAfzal7](https://github.com/HarisAfzal7))
 - **Salman Sagheer** ([@imaani5](https://github.com/imaani5))
 
