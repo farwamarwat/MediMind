@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Symptom check - MediMind{% endblock %}
+
+{% block content %}
+<section class="form-card wide">
+    <h1>Describe your symptoms</h1>
+    <p class="help">
+        Write in your own words - what you feel, where, and for how long.
+        The more detail you give, the more useful the result.
+    </p>
+
+    <form method="post">
+        <label for="symptoms">Symptoms</label>
+        <textarea id="symptoms" name="symptoms" rows="6" required minlength="10"
+                  placeholder="e.g. Sore throat and a runny nose since yesterday, mild fever in the evening">{{ symptoms }}</textarea>
+        <button type="submit" class="btn btn-primary">Check my symptoms</button>
+    </form>
+
+    <p class="warning-note">
+        If you have chest pain, trouble breathing, heavy bleeding, or someone is
+        unconscious - do not use this form. Call Rescue 1122 or go to the nearest
+        emergency department now.
+    </p>
+</section>
+{% endblock %}

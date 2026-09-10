@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Your history - MediMind{% endblock %}
+
+{% block content %}
+<h1>Consultation history</h1>
+
+{% if consultations %}
+    <ul class="consultation-list">
+    {% for item in consultations %}
+        <li class="consultation-item triage-{{ item.triage_level }}">
+            <a href="{{ url_for('main.consultation_result', consultation_id=item.id) }}">
+                <span class="triage-badge">{{ item.triage_label }}</span>
+                <span class="consultation-summary">{{ item.symptoms_text|truncate(120) }}</span>
+                <time datetime="{{ item.created_at.isoformat() }}">
+                    {{ item.created_at.strftime('%d %b %Y') }}
+                </time>
+            </a>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p class="empty">
+        Nothing here yet.
+        <a href="{{ url_for('main.consultation') }}">Run your first symptom check.</a>
+    </p>
+{% endif %}
+{% endblock %}

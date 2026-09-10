@@ -1,26 +1,45 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>MediMind - Your Healthcare Companion</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/styles.css">
-</head>
-<body>
-    <header>
-        <h1>Welcome to MediMind</h1>
-        <img src="/static/images/logo.png" alt="MediMind Logo">
-    </header>
-    <main>
-        <p>MediMind is your healthcare companion. Consult with our AI-powered doctor for medical advice and assistance.</p>
-        <p>Get started by logging in or creating an account.</p>
-    </main>
-    <nav>
-        <ul>
-            <li><a href="/login">Login</a></li>
-            <li><a href="/signup">Sign Up</a></li>
-        </ul>
-    </nav>
-    <footer>
-        <p>&copy; 2023 MediMind Healthcare</p>
-    </footer>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}MediMind - Symptom triage for everyone{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Know whether to worry, and who to see.</h1>
+    <p class="lede">
+        MediMind reads your symptoms in plain language and tells you how urgently
+        you need care - from self-care at home to an emergency room right now.
+        Built for people who cannot always reach a doctor quickly.
+    </p>
+    <div class="hero-actions">
+        {% if current_user.is_authenticated %}
+            <a class="btn btn-primary" href="{{ url_for('main.consultation') }}">Start a symptom check</a>
+        {% else %}
+            <a class="btn btn-primary" href="{{ url_for('auth.signup') }}">Create a free account</a>
+            <a class="btn btn-ghost" href="{{ url_for('auth.login') }}">I already have one</a>
+        {% endif %}
+    </div>
+</section>
+
+<section class="features">
+    <article class="feature">
+        <h2>Urgency first</h2>
+        <p>
+            Every check returns a triage level, not just a guess at a condition.
+            Knowing <em>how fast</em> to act matters more than a label.
+        </p>
+    </article>
+    <article class="feature">
+        <h2>Emergency signals</h2>
+        <p>
+            Chest pain, trouble breathing, stroke signs and other red flags
+            escalate immediately - independently of the model.
+        </p>
+    </article>
+    <article class="feature">
+        <h2>Honest about doubt</h2>
+        <p>
+            When confidence is low, MediMind says so and points you to a
+            clinician instead of inventing an answer.
+        </p>
+    </article>
+</section>
+{% endblock %}

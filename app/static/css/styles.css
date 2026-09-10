@@ -1,60 +1,319 @@
-/* Reset some default styles */
-body, h1, p {
+:root {
+    --ink: #14212b;
+    --ink-soft: #55636e;
+    --line: #dfe5ea;
+    --bg: #f6f8fa;
+    --card: #ffffff;
+    --brand: #0f766e;
+    --brand-dark: #0b5852;
+
+    --self-care: #15803d;
+    --see-doctor: #0369a1;
+    --urgent: #c2410c;
+    --emergency: #b91c1c;
+
+    --radius: 10px;
+    --shadow: 0 1px 3px rgba(20, 33, 43, .08), 0 8px 24px rgba(20, 33, 43, .05);
+}
+
+* { box-sizing: border-box; }
+
+body {
     margin: 0;
-    padding: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-/* Define styles for the header */
-header {
-    background-color: #3498db;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
+a { color: var(--brand); }
+
+/* ---------- header ---------- */
+.site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 14px 24px;
+    background: var(--card);
+    border-bottom: 1px solid var(--line);
 }
 
-/* Define styles for the header h1 */
-header h1 {
-    font-size: 2em;
-    margin-bottom: 10px;
-}
-
-/* Define styles for the logo image */
-header img {
-    max-width: 100px;
-}
-
-/* Define styles for the main content */
-main {
-    padding: 20px;
-    text-align: center;
-}
-
-/* Define styles for the navigation */
-nav ul {
-    list-style: none;
-    text-align: center;
-}
-
-nav li {
-    display: inline;
-    margin: 0 20px;
-}
-
-nav a {
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 650;
+    font-size: 1.15rem;
+    color: var(--ink);
     text-decoration: none;
-    color: #3498db;
-    font-weight: bold;
 }
 
-/* Define styles for the footer */
-footer {
-    background-color: #3498db;
-    color: #fff;
+.brand-logo { height: 32px; width: auto; }
+
+.site-nav { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+.site-nav a { text-decoration: none; color: var(--ink-soft); font-weight: 500; }
+.site-nav a:hover { color: var(--brand); }
+.btn-nav {
+    background: var(--brand);
+    color: #fff !important;
+    padding: 7px 14px;
+    border-radius: var(--radius);
+}
+
+/* ---------- layout ---------- */
+.site-main {
+    flex: 1;
+    width: 100%;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 32px 20px 56px;
+}
+
+.site-footer {
+    border-top: 1px solid var(--line);
+    background: var(--card);
+    padding: 20px;
     text-align: center;
-    padding: 10px;
 }
 
-/* Add a hover effect for links */
-nav a:hover {
-    text-decoration: underline;
+.disclaimer {
+    max-width: 640px;
+    margin: 0 auto 8px;
+    font-size: .85rem;
+    color: var(--ink-soft);
+}
+
+.copyright { font-size: .8rem; color: var(--ink-soft); margin: 0; }
+
+/* ---------- flashes ---------- */
+.flashes { list-style: none; padding: 0; margin: 0 0 24px; }
+.flash {
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+    border-left: 4px solid var(--brand);
+    background: #fff;
+    box-shadow: var(--shadow);
+}
+.flash-danger  { border-left-color: var(--emergency); }
+.flash-warning { border-left-color: var(--urgent); }
+.flash-success { border-left-color: var(--self-care); }
+.flash-info    { border-left-color: var(--see-doctor); }
+
+/* ---------- hero ---------- */
+.hero { text-align: center; padding: 24px 0 40px; }
+.hero h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); line-height: 1.2; margin: 0 0 16px; }
+.lede { max-width: 620px; margin: 0 auto 28px; color: var(--ink-soft); font-size: 1.05rem; }
+.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.features { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.feature {
+    background: var(--card);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+.feature h2 { font-size: 1.05rem; margin: 0 0 8px; }
+.feature p { margin: 0; color: var(--ink-soft); font-size: .95rem; }
+
+/* ---------- buttons ---------- */
+.btn {
+    display: inline-block;
+    padding: 11px 20px;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    font-weight: 550;
+    font-size: 1rem;
+    text-decoration: none;
+    cursor: pointer;
+}
+.btn-primary { background: var(--brand); color: #fff; }
+.btn-primary:hover { background: var(--brand-dark); }
+.btn-ghost { background: transparent; border-color: var(--line); color: var(--ink); }
+
+/* ---------- forms ---------- */
+.form-card {
+    background: var(--card);
+    padding: 28px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    max-width: 460px;
+    margin: 0 auto;
+}
+.form-card.wide { max-width: 640px; }
+.form-card h1 { margin-top: 0; font-size: 1.5rem; }
+
+label { display: block; margin: 14px 0 6px; font-weight: 550; font-size: .92rem; }
+label.checkbox { display: flex; align-items: center; gap: 8px; font-weight: 400; }
+
+input[type="text"], input[type="password"], input[type="email"],
+input[type="number"], select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font: inherit;
+    background: #fff;
+}
+input:focus, select:focus, textarea:focus {
+    outline: 2px solid var(--brand);
+    outline-offset: 1px;
+    border-color: var(--brand);
+}
+textarea { resize: vertical; }
+
+input[type="submit"], .form-card button { margin-top: 20px; width: 100%; }
+
+.field-error { color: var(--emergency); font-size: .85rem; margin: 6px 0 0; }
+.form-alt { margin-top: 18px; font-size: .92rem; color: var(--ink-soft); }
+.help { color: var(--ink-soft); margin-top: 0; }
+.warning-note {
+    margin-top: 22px;
+    padding: 12px 16px;
+    background: #fef2f2;
+    border-left: 4px solid var(--emergency);
+    border-radius: var(--radius);
+    font-size: .9rem;
+}
+
+/* ---------- dashboard ---------- */
+.dashboard-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.dashboard-head h1 { margin: 0; font-size: 1.6rem; }
+
+.stats {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    margin: 28px 0;
+}
+.stat {
+    background: var(--card);
+    padding: 18px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+.stat-value { display: block; font-size: 1.6rem; font-weight: 650; }
+.stat-label { font-size: .85rem; color: var(--ink-soft); }
+
+.consultation-list { list-style: none; padding: 0; margin: 0; }
+.consultation-item {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 10px;
+    border-left: 5px solid var(--line);
+}
+.consultation-item a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 14px 18px;
+    text-decoration: none;
+    color: var(--ink);
+}
+.consultation-summary { flex: 1; min-width: 180px; color: var(--ink-soft); font-size: .93rem; }
+.consultation-item time { font-size: .85rem; color: var(--ink-soft); }
+
+.triage-badge {
+    font-size: .78rem;
+    font-weight: 650;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--line);
+    white-space: nowrap;
+}
+
+.triage-self_care  { border-left-color: var(--self-care); }
+.triage-see_doctor { border-left-color: var(--see-doctor); }
+.triage-urgent     { border-left-color: var(--urgent); }
+.triage-emergency  { border-left-color: var(--emergency); }
+
+.triage-self_care  .triage-badge { background: #dcfce7; color: var(--self-care); }
+.triage-see_doctor .triage-badge { background: #e0f2fe; color: var(--see-doctor); }
+.triage-urgent     .triage-badge { background: #ffedd5; color: var(--urgent); }
+.triage-emergency  .triage-badge { background: #fee2e2; color: var(--emergency); }
+
+.empty { color: var(--ink-soft); }
+
+/* ---------- result ---------- */
+.result {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border-top: 6px solid var(--line);
+    padding: 28px;
+}
+.result-eyebrow {
+    margin: 0;
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--ink-soft);
+}
+.result-triage { margin: 4px 0 16px; font-size: 1.7rem; }
+.result.triage-self_care  { border-top-color: var(--self-care); }
+.result.triage-see_doctor { border-top-color: var(--see-doctor); }
+.result.triage-urgent     { border-top-color: var(--urgent); }
+.result.triage-emergency  { border-top-color: var(--emergency); }
+.result.triage-self_care  .result-triage { color: var(--self-care); }
+.result.triage-see_doctor .result-triage { color: var(--see-doctor); }
+.result.triage-urgent     .result-triage { color: var(--urgent); }
+.result.triage-emergency  .result-triage { color: var(--emergency); }
+
+.emergency-call {
+    background: #fee2e2;
+    color: var(--emergency);
+    font-weight: 650;
+    padding: 14px 18px;
+    border-radius: var(--radius);
+}
+
+.result-advice { font-size: 1.02rem; }
+
+.result-condition { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--line); }
+.result-condition h2 {
+    font-size: 1rem;
+    color: var(--ink-soft);
+    margin: 0 0 4px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+.condition-name { font-size: 1.3rem; font-weight: 650; margin: 0 0 14px; }
+
+.confidence { display: flex; align-items: center; gap: 12px; }
+.confidence-bar { flex: 1; height: 8px; background: var(--line); border-radius: 999px; overflow: hidden; }
+.confidence-fill { height: 100%; background: var(--brand); }
+.confidence-label { font-size: .88rem; color: var(--ink-soft); white-space: nowrap; }
+.condition-caveat { font-size: .88rem; color: var(--ink-soft); margin-top: 12px; }
+
+.result-input { margin-top: 24px; font-size: .93rem; }
+.result-input summary { cursor: pointer; color: var(--ink-soft); }
+.timestamp { font-size: .82rem; color: var(--ink-soft); }
+
+.result-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
+
+/* ---------- errors ---------- */
+.error-page { text-align: center; padding: 60px 20px; }
+.error-page h1 { font-size: 3.5rem; margin: 0; color: var(--ink-soft); }
+
+@media (max-width: 560px) {
+    .site-header { padding: 12px 16px; }
+    .site-main { padding: 24px 16px 40px; }
+    .dashboard-head { align-items: flex-start; flex-direction: column; }
 }

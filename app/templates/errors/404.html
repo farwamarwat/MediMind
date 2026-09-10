@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Not found - MediMind{% endblock %}
+{% block content %}
+<section class="error-page">
+    <h1>404</h1>
+    <p>That page does not exist.</p>
+    <a class="btn btn-primary" href="{{ url_for('main.index') }}">Go home</a>
+</section>
+{% endblock %}

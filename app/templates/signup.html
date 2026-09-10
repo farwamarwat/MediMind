@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Sign up - MediMind{% endblock %}
+
+{% block content %}
+<section class="form-card">
+    <h1>Create your account</h1>
+    <form method="post" novalidate>
+        {{ form.hidden_tag() }}
+
+        {% for field in [form.username, form.email, form.full_name, form.age, form.gender, form.city, form.password, form.confirm_password] %}
+            <label for="{{ field.id }}">{{ field.label.text }}</label>
+            {{ field() }}
+            {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+        {% endfor %}
+
+        {{ form.submit(class='btn btn-primary') }}
+    </form>
+    <p class="form-alt">
+        Already registered? <a href="{{ url_for('auth.login') }}">Log in</a>
+    </p>
+</section>
+{% endblock %}
