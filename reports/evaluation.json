@@ -1,0 +1,98 @@
+{
+  "clean_test_accuracy": 1.0,
+  "robustness": {
+    "reordered symptoms": 0.999,
+    "incomplete list (33% dropped)": 0.9654,
+    "written as a sentence": 1.0,
+    "with typos": 0.9929
+  },
+  "confidence_audit": {
+    "threshold": 0.25,
+    "confident_and_correct": 984,
+    "confident_but_wrong": 0,
+    "withheld_low_confidence": 0,
+    "confident_error_rate": 0.0
+  },
+  "layperson_probe": {
+    "n_probes": 20,
+    "top1_accuracy": 0.4,
+    "confidently_wrong": 0,
+    "withheld_low_confidence": 18,
+    "misses": [
+      {
+        "text": "burning feeling when I pee and I need to go to the toilet all the time",
+        "expected": "Urinary tract infection",
+        "predicted": "Dengue",
+        "confidence": 0.0646
+      },
+      {
+        "text": "my chest burns after eating and I keep burping up acid",
+        "expected": "GERD",
+        "predicted": "Heart attack",
+        "confidence": 0.1462
+      },
+      {
+        "text": "throbbing headache on one side of my head, the light hurts my eyes and I feel sick",
+        "expected": "Migraine",
+        "predicted": "Paralysis (brain hemorrhage)",
+        "confidence": 0.1545
+      },
+      {
+        "text": "high fever with chills and shivering, sweating a lot and vomiting",
+        "expected": "Malaria",
+        "predicted": "Allergy",
+        "confidence": 0.1114
+      },
+      {
+        "text": "my eyes and skin have gone yellow, my urine is dark and I feel very tired",
+        "expected": "Jaundice",
+        "predicted": "Urinary tract infection",
+        "confidence": 0.0816
+      },
+      {
+        "text": "very thirsty all the time, passing urine constantly and losing weight",
+        "expected": "Diabetes",
+        "predicted": "Jaundice",
+        "confidence": 0.0745
+      },
+      {
+        "text": "wheezing and short of breath with a tight chest, much worse at night",
+        "expected": "Bronchial Asthma",
+        "predicted": "Heart attack",
+        "confidence": 0.1062
+      },
+      {
+        "text": "my joints are painful and stiff in the morning and my knees hurt when I walk",
+        "expected": "Osteoarthristis",
+        "predicted": "Arthritis",
+        "confidence": 0.1459
+      },
+      {
+        "text": "the room spins when I turn my head and I feel unsteady on my feet",
+        "expected": "(vertigo) Paroymsal  Positional Vertigo",
+        "predicted": "Urinary tract infection",
+        "confidence": 0.0705
+      },
+      {
+        "text": "loose motions many times a day with vomiting and I feel very weak",
+        "expected": "Gastroenteritis",
+        "predicted": "Urinary tract infection",
+        "confidence": 0.0954
+      },
+      {
+        "text": "pain and bleeding when I pass stool and there is a lump near my back passage",
+        "expected": "Dimorphic hemmorhoids(piles)",
+        "predicted": "Peptic ulcer diseae",
+        "confidence": 0.0562
+      },
+      {
+        "text": "red scaly patches on my elbows and knees that flake off",
+        "expected": "Psoriasis",
+        "predicted": "Fungal infection",
+        "confidence": 0.0843
+      }
+    ]
+  },
+  "n_test_samples": 984,
+  "n_classes": 41
+}

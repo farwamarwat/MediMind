@@ -44,6 +44,7 @@ from scripts.train_model import (  # noqa: E402
 )
 
 REPORTS_DIR = BASE_DIR / 'reports'
+PROBES_PATH = BASE_DIR / 'data' / 'layperson_probes.json'
 
 FILLER_TEMPLATES = [
     'I have been having {} for the last two days',
@@ -152,6 +153,61 @@ def confidence_audit(model, x_test, y_test, threshold=0.25):
     }
 
 
+def layperson_probe(model, threshold=0.25):
+    """Measure the gap between clinical vocabulary and how people actually talk.
+
+    The training data labels symptoms as tokens like `burning_micturition` and
+    `dischromic _patches`. A user types "it burns when I pee". The perturbation
+    study above cannot detect that mismatch, because it only ever rearranges
+    the dataset's own words. These probes are written in everyday English and
+    are never trained on, so they measure the one thing that decides whether
+    the model is usable by real people.
+    """
+    if not PROBES_PATH.exists():
+        return None
+
+    payload = json.loads(PROBES_PATH.read_text(encoding='utf-8'))
+    probes = payload['probes']
+    classes = list(model.classes_)
+
+    correct = 0
+    withheld = 0
+    confidently_wrong = 0
+    misses = []
+
+    for probe in probes:
+        row = model.predict_proba([probe['text'].lower()])[0]
+        best = row.argmax()
+        prediction = str(classes[best])
+        confidence = float(row[best])
+        expected = probe['expected'].strip()
+
+        if prediction == expected:
+            correct += 1
+        else:
+            misses.append(
+                {
+                    'text': probe['text'],
+                    'expected': expected,
+                    'predicted': prediction,
+                    'confidence': round(confidence, 4),
+                }
+            )
+            if confidence >= threshold:
+                confidently_wrong += 1
+
+        if confidence < threshold:
+            withheld += 1
+
+    return {
+        'n_probes': len(probes),
+        'top1_accuracy': round(correct / len(probes), 4),
+        'confidently_wrong': confidently_wrong,
+        'withheld_low_confidence': withheld,
+        'misses': misses,
+    }
+
+
 def main():
     if not DEFAULT_OUT.exists() or DEFAULT_OUT.stat().st_size == 0:
         raise SystemExit(
@@ -186,8 +242,8 @@ def main():
         perturbed = [perturb(text, rng) for text in x_test]
         score = accuracy_score(y_test, model.predict(perturbed))
         robustness[name] = round(float(score), 4)
-        drop = clean_accuracy - score
-        print(f'  {name:32} {score:.4f}  ({drop:+.4f} vs clean)')
+        delta = score - clean_accuracy
+        print(f'  {name:32} {score:.4f}  ({delta:+.4f} vs clean)')
 
     audit = confidence_audit(model, x_test, y_test)
     print('\nConfidence audit at the production threshold:')
@@ -195,10 +251,26 @@ def main():
     print(f'  Confident but wrong:   {audit["confident_but_wrong"]}')
     print(f'  Withheld (low conf.):  {audit["withheld_low_confidence"]}')
 
+    probe = layperson_probe(model)
+    if probe:
+        print('\nLayperson vocabulary probe (everyday phrasing, never trained on):')
+        print(
+            f'  Top-1 accuracy:      {probe["top1_accuracy"]:.4f} '
+            f'over {probe["n_probes"]} probes'
+        )
+        print(f'  Confidently wrong:   {probe["confidently_wrong"]}')
+        print(f'  Withheld (low conf): {probe["withheld_low_confidence"]}')
+        for miss in probe['misses']:
+            print(
+                f'    MISS  expected {miss["expected"]!r}, '
+                f'got {miss["predicted"]!r} at {miss["confidence"]:.2f}'
+            )
+
     summary = {
         'clean_test_accuracy': round(float(clean_accuracy), 4),
         'robustness': robustness,
         'confidence_audit': audit,
+        'layperson_probe': probe,
         'n_test_samples': len(y_test),
         'n_classes': len(class_labels),
     }
