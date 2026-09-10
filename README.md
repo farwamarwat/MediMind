@@ -148,7 +148,7 @@ MediMind began as a three-person final year project:
 
 - **Farwa Khan** ([@farwamarwat](https://github.com/farwamarwat))
 - **Haris Afzal** ([@HarisAfzal7](https://github.com/HarisAfzal7))
-- _third team member - name and GitHub handle to be added_
+- **Salman Sagheer** ([@imaani5](https://github.com/imaani5))
 
 The v1.0 release was the team's original project. Work from v2.0 onward is a
 continuation by Farwa Khan.
