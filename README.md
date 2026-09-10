@@ -151,7 +151,7 @@ MediMind began as a three-person final year project:
 - **Salman Sagheer** ([@imaani5](https://github.com/imaani5))
 
 The v1.0 release was the team's original project. Work from v2.0 onward is a
-continuation by Farwa Khan.
+continuation by Farwa Ameer.
 
 ## Disclaimer
 
