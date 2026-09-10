@@ -45,3 +45,5 @@ Thumbs.db
 # Jupyter
 .ipynb_checkpoints/
 *.pkl
+data/*.csv
+!data/README.md

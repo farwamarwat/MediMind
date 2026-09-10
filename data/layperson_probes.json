@@ -1,0 +1,86 @@
+{
+  "_about": "Everyday-language descriptions of conditions in the training set, written by hand to probe vocabulary generalisation. The training data uses clinical symptom tokens (continuous_sneezing, burning_micturition, dischromic _patches); real users type sentences like these. This set is never trained on - it exists only to measure the gap. Labels match the dataset's own spellings, including its typos.",
+  "_source": "Authored by the MediMind team. Not clinical ground truth: each probe describes a textbook presentation, not a diagnosed case.",
+  "probes": [
+    {
+      "text": "I keep sneezing and my eyes are watering, this happens every spring",
+      "expected": "Allergy"
+    },
+    {
+      "text": "burning feeling when I pee and I need to go to the toilet all the time",
+      "expected": "Urinary tract infection"
+    },
+    {
+      "text": "my chest burns after eating and I keep burping up acid",
+      "expected": "GERD"
+    },
+    {
+      "text": "throbbing headache on one side of my head, the light hurts my eyes and I feel sick",
+      "expected": "Migraine"
+    },
+    {
+      "text": "runny nose, sore throat, keep sneezing and my head feels blocked up",
+      "expected": "Common Cold"
+    },
+    {
+      "text": "high fever with chills and shivering, sweating a lot and vomiting",
+      "expected": "Malaria"
+    },
+    {
+      "text": "itchy red patches on my skin that keep spreading and will not go away",
+      "expected": "Fungal infection"
+    },
+    {
+      "text": "my eyes and skin have gone yellow, my urine is dark and I feel very tired",
+      "expected": "Jaundice"
+    },
+    {
+      "text": "very thirsty all the time, passing urine constantly and losing weight",
+      "expected": "Diabetes"
+    },
+    {
+      "text": "wheezing and short of breath with a tight chest, much worse at night",
+      "expected": "Bronchial Asthma"
+    },
+    {
+      "text": "coughing for weeks and there is blood in it, losing weight and sweating at night",
+      "expected": "Tuberculosis"
+    },
+    {
+      "text": "my joints are painful and stiff in the morning and my knees hurt when I walk",
+      "expected": "Osteoarthristis"
+    },
+    {
+      "text": "itchy blisters coming out all over my body with a mild fever and tiredness",
+      "expected": "Chicken pox"
+    },
+    {
+      "text": "the room spins when I turn my head and I feel unsteady on my feet",
+      "expected": "(vertigo) Paroymsal  Positional Vertigo"
+    },
+    {
+      "text": "pimples and blackheads breaking out on my face and back",
+      "expected": "Acne"
+    },
+    {
+      "text": "swollen twisted veins on my legs that ache after I stand for a long time",
+      "expected": "Varicose veins"
+    },
+    {
+      "text": "I feel cold all the time, tired, gaining weight and my skin is dry",
+      "expected": "Hypothyroidism"
+    },
+    {
+      "text": "loose motions many times a day with vomiting and I feel very weak",
+      "expected": "Gastroenteritis"
+    },
+    {
+      "text": "pain and bleeding when I pass stool and there is a lump near my back passage",
+      "expected": "Dimorphic hemmorhoids(piles)"
+    },
+    {
+      "text": "red scaly patches on my elbows and knees that flake off",
+      "expected": "Psoriasis"
+    }
+  ]
+}

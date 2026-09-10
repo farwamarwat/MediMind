@@ -1,0 +1,10 @@
+{
+  "n_samples": 4920,
+  "n_classes": 41,
+  "cv_accuracy_mean": 1.0,
+  "cv_accuracy_std": 0.0,
+  "train_accuracy": 1.0,
+  "test_accuracy": 1.0,
+  "model": "TfidfVectorizer(1,2) + LogisticRegression",
+  "random_state": 42
+}

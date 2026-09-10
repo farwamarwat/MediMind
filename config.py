@@ -34,6 +34,10 @@ class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     WTF_CSRF_ENABLED = False
+    # Point at a path that never exists so the suite always exercises the
+    # deterministic rule-based baseline. Otherwise these tests would pass or
+    # fail depending on whether the developer happens to have trained a model.
+    MODEL_PATH = BASE_DIR / 'models' / 'no-model-during-tests.pkl'
 
 
 class ProductionConfig(Config):

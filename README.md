@@ -53,6 +53,86 @@ These rules are covered by tests in
 [`tests/test_triage.py`](tests/test_triage.py), including one asserting that
 advice text never contains a drug name.
 
+## Model and evaluation
+
+The classifier is TF-IDF (1-2 grams) into logistic regression, trained on 4,920
+cases across 41 conditions from the
+[Disease Symptom Prediction dataset](https://www.kaggle.com/datasets/itachi9604/disease-symptom-description-dataset).
+Logistic regression was chosen over a tree ensemble for two reasons: it exposes
+well-behaved `predict_proba`, which the confidence floor depends on, and its
+coefficients remain inspectable, which matters for a tool that has to justify
+itself.
+
+Reproduce with `python scripts/train_model.py && python scripts/evaluate_model.py`.
+
+### The headline number is not the story
+
+| Metric | Score |
+| --- | --- |
+| 5-fold CV accuracy | 1.0000 |
+| Held-out test accuracy | 1.0000 |
+| Macro F1 | 1.00 |
+
+**A perfect score here is a warning, not an achievement.** This dataset is
+synthetically generated: each condition maps to a near-fixed symptom set with
+almost no overlap or noise, so the classes are linearly separable and any
+reasonable model saturates. The number measures the dataset, not the medicine.
+
+Reporting 100% accuracy on a medical model without that caveat would be
+misleading, so the evaluation deliberately tries to break it.
+
+### Robustness under messier input
+
+Re-testing the held-out set after rewriting each case the way a user might:
+
+| Input variation | Accuracy | Change |
+| --- | --- | --- |
+| Clean (as in dataset) | 1.0000 | - |
+| Reordered symptoms | 0.9990 | -0.0010 |
+| Written as a sentence | 1.0000 | 0.0000 |
+| With typos | 0.9929 | -0.0071 |
+| Incomplete list (33% dropped) | 0.9654 | -0.0346 |
+
+Still strong - but these perturbations all reuse the dataset's own clinical
+vocabulary, so they test word order, not language. The real question is harder.
+
+### The vocabulary gap
+
+The training data labels symptoms as `burning_micturition` and
+`dischromic _patches`. A real user types *"it burns when I pee"*. To measure
+that gap, [`data/layperson_probes.json`](data/layperson_probes.json) holds 20
+descriptions written in everyday English, never trained on:
+
+| Metric | Score |
+| --- | --- |
+| Top-1 accuracy on clinical vocabulary | **1.0000** |
+| Top-1 accuracy on everyday language | **0.4000** |
+
+Accuracy collapses from 100% to 40%. Some of the failures are clinically
+alarming: reflux described in plain words was predicted as *heart attack*, and
+a migraine description as *brain hemorrhage*.
+
+**This is the result the safety architecture was built for.** Of those 20
+probes:
+
+- **0** were confidently wrong
+- **18** fell below the confidence threshold and were withheld, routing the
+  user to a clinician instead
+
+Every dangerous misprediction landed below `MIN_CONFIDENCE` and was never
+shown to anyone. A system reporting only its accuracy would have looked perfect
+while telling someone with reflux they were having a heart attack. The
+confidence floor is what separates those two outcomes, and this is evidence it
+holds under distribution shift rather than only in principle.
+
+### What this implies
+
+The bottleneck is vocabulary, not modelling. The next meaningful improvement is
+a symptom normalisation layer mapping lay phrases onto clinical tokens, which
+would raise real-world accuracy far more than swapping the classifier. That is
+on the roadmap below; this release ships the honest limitation together with a
+safety net that contains it.
+
 ## Features
 
 - Free-text symptom entry, no rigid checkbox questionnaire
@@ -106,11 +186,28 @@ All settings come from the environment, documented in
 | `MODEL_PATH` | Location of the trained classifier. |
 | `MIN_CONFIDENCE` | Confidence floor below which no condition is shown. |
 
+### Training the model
+
+The trained model is not committed. To reproduce it, download
+`dataset.csv` as described in [`data/README.md`](data/README.md), then:
+
+```bash
+python scripts/train_model.py       # writes models/machine_learning_model.pkl
+python scripts/evaluate_model.py    # writes reports/
+```
+
+Evaluation outputs land in [`reports/`](reports/): per-class metrics, a
+confusion matrix image, the robustness study and the confidence audit.
+
 ### Running the tests
 
 ```bash
 pytest
 ```
+
+38 tests cover authentication, the consultation flow, triage safety rules
+and the training pipeline. The training tests use a synthetic fixture, so
+the suite passes without the Kaggle dataset present.
 
 ## Project structure
 
@@ -127,6 +224,11 @@ MediMind/
 ├── database.py              # SQLAlchemy instance and data access
 ├── doctor_ai.py             # triage engine: red flags + classifier
 ├── triage.py                # shared triage vocabulary
+├── scripts/
+│   ├── train_model.py       # training pipeline
+│   └── evaluate_model.py    # metrics, robustness, confidence audit
+├── data/                    # dataset docs and layperson probes
+├── reports/                 # generated metrics and confusion matrix
 ├── tests/
 ├── nginx/                   # reverse proxy config
 └── run.py                   # entry point
@@ -136,7 +238,10 @@ MediMind/
 
 - [x] Working authentication, persistence and consultation flow
 - [x] Red-flag triage layer with test coverage
-- [ ] Trained symptom classifier with published evaluation metrics
+- [x] Trained symptom classifier with published evaluation metrics
+- [x] Robustness and confidence auditing of the trained model
+- [ ] Symptom normalisation layer mapping lay phrases to clinical tokens
+      (the single biggest real-world accuracy win available)
 - [ ] Urdu/English bilingual interface
 - [ ] SMS access for users without smartphones
 - [ ] Anonymised aggregate symptom trends dashboard
@@ -151,7 +256,7 @@ MediMind began as a three-person final year project:
 - **Salman Sagheer** ([@imaani5](https://github.com/imaani5))
 
 The v1.0 release was the team's original project. Work from v2.0 onward is a
-continuation by Farwa Khan.
+continuation by Farwa Ameer.
 
 ## Disclaimer
 
