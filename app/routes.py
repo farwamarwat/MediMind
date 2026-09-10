@@ -1,42 +1,91 @@
 # app/routes.py
 
-from app import app, doctor, db
-from flask import render_template, request, session, redirect, url_for
+from flask import (
+    Blueprint,
+    abort,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
+from flask_login import current_user, login_required
 
-@app.route('/')
+from app import doctor
+from app.models import Consultation
+from database import db, retrieve_consultation_data
+from triage import TriageLevel
+
+main_bp = Blueprint('main', __name__)
+
+
+@main_bp.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        # Handle user login
-        username = request.form['username']
-        password = request.form['password']
-        # Check user credentials and set session variables
-        return redirect(url_for('dashboard'))
-    return render_template('login.html')
 
-@app.route('/dashboard')
+@main_bp.route('/dashboard')
+@login_required
 def dashboard():
-    if 'user_id' in session:
-        # Load user data from the database
-        user_data = db.retrieve_user_data(session['user_id'])
-        return render_template('dashboard.html', user_data=user_data)
-    return redirect(url_for('login'))
+    consultations = retrieve_consultation_data(current_user.id, limit=5)
+    total = current_user.consultations.count()
+    return render_template(
+        'dashboard.html',
+        consultations=consultations,
+        total_consultations=total,
+    )
 
-@app.route('/consultation', methods=['GET', 'POST'])
+
+@main_bp.route('/consultation', methods=['GET', 'POST'])
+@login_required
 def consultation():
-    if 'user_id' in session:
-        if request.method == 'POST':
-            symptoms = request.form['symptoms']
-            # Call the AI model to analyze symptoms and suggest medicines
-            result = doctor.analyze_symptoms(symptoms)
-            return render_template('consultation_result.html', result=result)
-        return render_template('consultation.html')
-    return redirect(url_for('login'))
+    if request.method == 'POST':
+        symptoms = (request.form.get('symptoms') or '').strip()
 
-@app.route('/logout')
-def logout():
-    session.pop('user_id', None)
-    return redirect(url_for('login'))
+        if len(symptoms) < 10:
+            flash(
+                'Please describe your symptoms in a little more detail '
+                '(at least 10 characters).',
+                'warning',
+            )
+            return render_template('consultation.html', symptoms=symptoms)
+
+        result = doctor.analyze_symptoms(symptoms)
+
+        record = Consultation(
+            user_id=current_user.id,
+            symptoms_text=symptoms,
+            predicted_condition=result['condition'],
+            confidence=result['confidence'],
+            triage_level=result['triage_level'],
+            advice=result['advice'],
+        )
+        db.session.add(record)
+        db.session.commit()
+
+        # Redirect after POST so a refresh does not re-submit the symptoms.
+        return redirect(url_for('main.consultation_result', consultation_id=record.id))
+
+    return render_template('consultation.html', symptoms='')
+
+
+@main_bp.route('/consultation/<int:consultation_id>')
+@login_required
+def consultation_result(consultation_id):
+    record = db.session.get(Consultation, consultation_id)
+    if record is None:
+        abort(404)
+    if record.user_id != current_user.id:
+        # Someone else's consultation: report it as missing, not as forbidden.
+        abort(404)
+
+    return render_template(
+        'consultation_result.html', consultation=record, levels=TriageLevel
+    )
+
+
+@main_bp.route('/history')
+@login_required
+def history():
+    consultations = retrieve_consultation_data(current_user.id)
+    return render_template('history.html', consultations=consultations)

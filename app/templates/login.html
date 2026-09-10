@@ -1,19 +1,26 @@
-<!-- app/templates/login.html -->
+{% extends 'base.html' %}
+{% block title %}Log in - MediMind{% endblock %}
 
+{% block content %}
+<section class="form-card">
+    <h1>Log in</h1>
+    <form method="post" novalidate>
+        {{ form.hidden_tag() }}
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<body>
-    
-    <h1>Login</h1>
-    <form method="post" action="/login">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Login</button>
+        <label for="username">{{ form.username.label.text }}</label>
+        {{ form.username(id='username', autocomplete='username') }}
+        {% for error in form.username.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+
+        <label for="password">{{ form.password.label.text }}</label>
+        {{ form.password(id='password', autocomplete='current-password') }}
+        {% for error in form.password.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+
+        <label class="checkbox">{{ form.remember_me() }} {{ form.remember_me.label.text }}</label>
+
+        {{ form.submit(class='btn btn-primary') }}
     </form>
-</body>
-</html>
+    <p class="form-alt">
+        No account yet? <a href="{{ url_for('auth.signup') }}">Sign up</a>
+    </p>
+</section>
+{% endblock %}

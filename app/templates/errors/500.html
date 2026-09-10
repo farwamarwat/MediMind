@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Something went wrong - MediMind{% endblock %}
+{% block content %}
+<section class="error-page">
+    <h1>500</h1>
+    <p>Something broke on our side. The error has been logged.</p>
+    <a class="btn btn-primary" href="{{ url_for('main.index') }}">Go home</a>
+</section>
+{% endblock %}

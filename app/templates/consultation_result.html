@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Your result - MediMind{% endblock %}
+
+{% block content %}
+<section class="result triage-{{ consultation.triage_level }}">
+    <p class="result-eyebrow">Triage level</p>
+    <h1 class="result-triage">{{ consultation.triage_label }}</h1>
+
+    {% if consultation.triage_level == levels.EMERGENCY %}
+        <p class="emergency-call">Call Rescue 1122 or go to the nearest hospital now.</p>
+    {% endif %}
+
+    <p class="result-advice">{{ consultation.advice }}</p>
+
+    {% if consultation.predicted_condition %}
+        <div class="result-condition">
+            <h2>Possible condition</h2>
+            <p class="condition-name">{{ consultation.predicted_condition }}</p>
+            <div class="confidence">
+                <div class="confidence-bar">
+                    <div class="confidence-fill" style="width: {{ consultation.confidence_percent }}%"></div>
+                </div>
+                <span class="confidence-label">{{ consultation.confidence_percent }}% confidence</span>
+            </div>
+            <p class="condition-caveat">
+                This is a suggestion based on patterns in symptom data - not a
+                diagnosis. Only a clinician who can examine you can confirm it.
+            </p>
+        </div>
+    {% endif %}
+
+    <details class="result-input">
+        <summary>What you told MediMind</summary>
+        <p>{{ consultation.symptoms_text }}</p>
+        <p class="timestamp">Checked on {{ consultation.created_at.strftime('%d %B %Y, %H:%M') }} UTC</p>
+    </details>
+
+    <div class="result-actions">
+        <a class="btn btn-primary" href="{{ url_for('main.consultation') }}">Run another check</a>
+        <a class="btn btn-ghost" href="{{ url_for('main.dashboard') }}">Back to dashboard</a>
+    </div>
+</section>
+{% endblock %}

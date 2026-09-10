@@ -1,22 +1,49 @@
 # database.py
+"""Data-access layer for MediMind.
 
-class Database:
-    def __init__(self):
-        # Initialize the database connection (e.g., using SQLite or another database system)
-        pass
+Owns the SQLAlchemy instance so that models and the app factory can share it
+without importing each other.
+"""
 
-    def store_user_data(self, user_data):
-        # Store user profiles and medical information in the database
-        pass
+from flask_sqlalchemy import SQLAlchemy
 
-    def store_ai_training_data(self, training_data):
-        # Store datasets for AI training in the database
-        pass
+db = SQLAlchemy()
 
-    def retrieve_user_data(self, user_id):
-        # Retrieve user data from the database
-        pass
 
-    def retrieve_consultation_data(self, user_id):
-        # Retrieve consultation data from the database
-        pass
+def init_db(app):
+    """Bind SQLAlchemy to the app and create any missing tables."""
+    db.init_app(app)
+    with app.app_context():
+        # Imported for their side effect: registering the mappers.
+        from app.auth.models import User  # noqa: F401
+        from app.models import Consultation  # noqa: F401
+
+        db.create_all()
+
+
+def retrieve_user_data(user_id):
+    """Return a user's profile, or None if no such user exists."""
+    from app.auth.models import User
+
+    return db.session.get(User, user_id)
+
+
+def retrieve_consultation_data(user_id, limit=None):
+    """Return a user's consultations, most recent first."""
+    from app.models import Consultation
+
+    query = (
+        db.select(Consultation)
+        .where(Consultation.user_id == user_id)
+        .order_by(Consultation.created_at.desc())
+    )
+    if limit is not None:
+        query = query.limit(limit)
+    return db.session.scalars(query).all()
+
+
+def store_consultation(consultation):
+    """Persist a consultation record."""
+    db.session.add(consultation)
+    db.session.commit()
+    return consultation

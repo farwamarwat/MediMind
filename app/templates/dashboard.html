@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - MediMind{% endblock %}
+
+{% block content %}
+<section class="dashboard-head">
+    <h1>Hello, {{ current_user.full_name or current_user.username }}</h1>
+    <a class="btn btn-primary" href="{{ url_for('main.consultation') }}">New symptom check</a>
+</section>
+
+<section class="stats">
+    <div class="stat">
+        <span class="stat-value">{{ total_consultations }}</span>
+        <span class="stat-label">Checks completed</span>
+    </div>
+    <div class="stat">
+        <span class="stat-value">{{ current_user.city or '-' }}</span>
+        <span class="stat-label">City</span>
+    </div>
+    <div class="stat">
+        <span class="stat-value">{{ current_user.created_at.strftime('%b %Y') }}</span>
+        <span class="stat-label">Member since</span>
+    </div>
+</section>
+
+<section>
+    <h2>Recent checks</h2>
+    {% if consultations %}
+        <ul class="consultation-list">
+        {% for item in consultations %}
+            <li class="consultation-item triage-{{ item.triage_level }}">
+                <a href="{{ url_for('main.consultation_result', consultation_id=item.id) }}">
+                    <span class="triage-badge">{{ item.triage_label }}</span>
+                    <span class="consultation-summary">{{ item.symptoms_text|truncate(90) }}</span>
+                    <time datetime="{{ item.created_at.isoformat() }}">
+                        {{ item.created_at.strftime('%d %b %Y') }}
+                    </time>
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+        <p><a href="{{ url_for('main.history') }}">See all checks</a></p>
+    {% else %}
+        <p class="empty">
+            You have not run a symptom check yet.
+            <a href="{{ url_for('main.consultation') }}">Start your first one.</a>
+        </p>
+    {% endif %}
+</section>
+{% endblock %}

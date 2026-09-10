@@ -1,3 +1,1 @@
-# web: gunicorn run:app
-# This Procfile is intentionally left empty.
-# Nginx is used as the production web server, and the application server (e.g., Gunicorn) is managed separately.
+web: gunicorn --bind 0.0.0.0:$PORT --workers 3 run:app
